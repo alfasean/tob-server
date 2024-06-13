@@ -7,7 +7,7 @@ exports.createPolicy = (req, res) => {
 
   const query = 'INSERT INTO policies (policy_number, insured_name, effective_date, expiry_date, vehicle_brand, vehicle_type, vehicle_year, vehicle_price, premium_rate, premium_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-  db.query(query, [policy_number, insured_name, effective_date, expiry_date, vehicle_brand, vehicle_type, vehicle_year, vehicle_price, premium_rate, premium_price], (err, results) => {
+  req.pool.query(query, [policy_number, insured_name, effective_date, expiry_date, vehicle_brand, vehicle_type, vehicle_year, vehicle_price, premium_rate, premium_price], (err, results) => {
     if (err) {
       return res.status(500).send(err);
     }
@@ -17,7 +17,7 @@ exports.createPolicy = (req, res) => {
 
 exports.getAllPolicies = (req, res) => {
   const query = 'SELECT * FROM policies';
-  db.query(query, (err, results) => {
+  req.pool.query(query, (err, results) => {
     if (err) {
       return res.status(500).send(err);
     }
@@ -32,7 +32,7 @@ exports.updatePolicy = (req, res) => {
 
   const query = 'UPDATE policies SET insured_name = ?, effective_date = ?, expiry_date = ?, vehicle_brand = ?, vehicle_type = ?, vehicle_year = ?, vehicle_price = ?, premium_rate = ?, premium_price = ? WHERE id = ?';
 
-  db.query(query, [insured_name, effective_date, expiry_date, vehicle_brand, vehicle_type, vehicle_year, vehicle_price, premium_rate, premium_price, id], (err, results) => {
+  req.pool.query(query, [insured_name, effective_date, expiry_date, vehicle_brand, vehicle_type, vehicle_year, vehicle_price, premium_rate, premium_price, id], (err, results) => {
     if (err) {
       return res.status(500).send(err);
     }
@@ -45,7 +45,7 @@ exports.deletePolicy = (req, res) => {
 
   const query = 'DELETE FROM policies WHERE id = ?';
 
-  db.query(query, [id], (err, results) => {
+  req.pool.query(query, [id], (err, results) => {
     if (err) {
       return res.status(500).send(err);
     }
@@ -54,15 +54,14 @@ exports.deletePolicy = (req, res) => {
 };
 
 exports.getPolicyById = (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    const query = 'SELECT * FROM policies WHERE id = ?';
+  const query = 'SELECT * FROM policies WHERE id = ?';
 
-    db.query(query, [id], (err, results) => {
-      if (err) {
-        return res.status(500).send(err);
-      }
-      res.status(200).json(results);
-    });
-  };
-  
+  req.pool.query(query, [id], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.status(200).json(results);
+  });
+};

@@ -12,19 +12,25 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const pool = mysql.createPool({
-  host: process.env.MYSQL_ADDON_HOST,
-  user: process.env.MYSQL_ADDON_USER,
-  password: process.env.MYSQL_ADDON_PASSWORD,
-  database: process.env.MYSQL_ADDON_DB,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
 });
 
-
 app.use((req, res, next) => {
-  req.pool = pool;
-  next();
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error('Error connecting to database:', err);
+      res.status(500).send('Error connecting to database');
+    } else {
+      req.pool = connection;
+      next();
+    }
+  });
 });
 
 app.use('/api/policies', policyRoutes);
