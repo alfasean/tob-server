@@ -65,3 +65,8 @@ exports.getPolicyById = (req, res) => {
     res.status(200).json(results);
   });
 };
+
+exports.favicon = (req, res) => {
+  res.sendStatus(204);
+};
+
